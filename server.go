@@ -4,10 +4,15 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 func main() {
 	e := echo.New()
+
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
 
 	// router
 	e.GET("/", func(c echo.Context) error {
@@ -20,8 +25,8 @@ func main() {
 func num2kanjiHandler(c echo.Context) (err error) {
 	param := c.Param("param")
 	res, err := Kanji2number(param)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, struct {
+	if err != nil || res == "" {
+		c.JSON(http.StatusNoContent, struct {
 			Message string
 		}{
 			Message: "変換できません.",

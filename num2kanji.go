@@ -39,18 +39,19 @@ func toKanji(num int) string {
 
 // constant units
 const (
-	TEN                  = 0
-	HUNDRED              = 1
-	THOUSAND             = 2
-	TEN_THOUSAND         = 3
-	ONE_HUNDRED_THOUSAND = 4
-	ONE_TRILLION         = 5
+	TEN                  = 1
+	HUNDRED              = 2
+	THOUSAND             = 3
+	TEN_THOUSAND         = 4
+	ONE_HUNDRED_THOUSAND = 8
+	ONE_TRILLION         = 12
 )
 
-const LIMIT_LOOP int = 6
+const LIMIT_LOOP int = 5
+const MAX = 9999999999999999
 
 var unitsByKanji = map[int]string{
-	TEN:                  "十",
+	TEN:                  "拾",
 	HUNDRED:              "百",
 	THOUSAND:             "千",
 	TEN_THOUSAND:         "万",
@@ -58,8 +59,10 @@ var unitsByKanji = map[int]string{
 	ONE_TRILLION:         "兆",
 }
 
+var unitsByInt [LIMIT_LOOP + 1]int = [LIMIT_LOOP + 1]int{1, 2, 3, 4, 8, 12}
+
 // getUnit this func's param is unit int, return string
-func getUnit(unit int) string {
+func getUnitByKanji(unit int) string {
 	return unitsByKanji[unit]
 }
 
@@ -69,25 +72,33 @@ func Kanji2number(param string) (result string, err error) {
 		result = ""
 		return
 	}
-
-	result = recursion2kanji(num, "")
+	if num == ZERO {
+		result = toKanji(num)
+	} else if num < ZERO || num > MAX {
+		result = ""
+	} else {
+		result = recursion2kanji(num, "")
+	}
 	return
 }
 
 func recursion2kanji(num int, result string) string {
 	for i := LIMIT_LOOP; i >= 0; i-- {
-		bias := math.Pow(10, float64(i))
+		loopUnit := unitsByInt[i]
+		bias := math.Pow10(loopUnit)
 		if num >= int(bias) {
 			top := math.Floor(float64(num / int(bias)))
 			if int(top) >= 10 {
-				recursion2kanji(int(top), result)
+				result += recursion2kanji(int(top), result)
 			} else {
 				result += toKanji(int(top))
 			}
-			result += getUnit(i)
+			result += getUnitByKanji(loopUnit)
 			num -= int(top) * int(bias)
 		}
 	}
-	result += toKanji(num)
+	if num != ZERO {
+		result += toKanji(num)
+	}
 	return result
 }
