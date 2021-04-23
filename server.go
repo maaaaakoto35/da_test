@@ -19,7 +19,7 @@ func main() {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 	e.GET("/v1/number2kanji/:param", func(c echo.Context) error { return num2kanjiHandler(c) })
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":80"))
 }
 
 func num2kanjiHandler(c echo.Context) (err error) {
