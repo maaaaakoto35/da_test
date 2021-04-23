@@ -1,2 +1,2 @@
-# da_test
-this_repository_is_for_coding_test
+## 実装状況
+2021年04月23日期限のためnum->kanjiまでしか実装できていない。
