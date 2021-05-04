@@ -20,14 +20,16 @@ var kanji2number = map[string]int{
 }
 
 // 降順であること
-var unitsByKanjiUnder = map[string]int{
+var unitsByKanjiUnder []string = []string{KANJI_THOUSAND, KANJI_HUNDRED, KANJI_TEN}
+var unitsByKanjiUnderMap = map[string]int{
 	KANJI_THOUSAND: THOUSAND,
 	KANJI_HUNDRED:  HUNDRED,
 	KANJI_TEN:      TEN,
 }
 
 // 降順であること
-var unitsByKanjiOver = map[string]int{
+var unitsByKanjiOver []string = []string{KANJI_ONE_TRILLION, KANJI_ONE_HUNDRED_THOUSAND, KANJI_TEN_THOUSAND}
+var unitsByKanjiOverMap = map[string]int{
 	KANJI_ONE_TRILLION:         ONE_TRILLION,
 	KANJI_ONE_HUNDRED_THOUSAND: ONE_HUNDRED_THOUSAND,
 	KANJI_TEN_THOUSAND:         TEN_THOUSAND,
@@ -35,12 +37,15 @@ var unitsByKanjiOver = map[string]int{
 
 func toInt(str string) (result int, canEx bool) {
 	result, canEx = kanji2number[str]
+	if !canEx {
+		print(str)
+	}
 	return
 }
 
 func kanji2num(param string) (result int, err error) {
 	if param == "" {
-		err = errors.New("invalid param")
+		err = errors.New("no contents")
 		return 0, err
 	}
 
@@ -55,13 +60,16 @@ func kanji2num(param string) (result int, err error) {
 // 万以下
 func recursion2numUnder(numstr string) (result int, canEx bool) {
 	// 10~
-	for key, value := range unitsByKanjiUnder {
-		strSlice := strings.Split(numstr, key)
+	for _, value := range unitsByKanjiUnder {
+		if !strings.Contains(numstr, value) {
+			continue
+		}
+		strSlice := strings.Split(numstr, value)
 		top, canEx := toInt(strSlice[0])
 		if !canEx {
 			return 0, canEx
 		} else {
-			result += top * int(math.Pow10(value))
+			result += top * int(math.Pow10(unitsByKanjiUnderMap[value]))
 			numstr = strSlice[1]
 		}
 	}
@@ -79,13 +87,16 @@ func recursion2numUnder(numstr string) (result int, canEx bool) {
 // 万以上
 func recursion2numOver(numstr string) (result int, canEx bool) {
 	// 万以上
-	for key, value := range unitsByKanjiOver {
-		strSlice := strings.Split(numstr, key)
+	for _, value := range unitsByKanjiOver {
+		if !strings.Contains(numstr, value) {
+			continue
+		}
+		strSlice := strings.Split(numstr, value)
 		top, canEx := recursion2numUnder(strSlice[0])
 		if !canEx {
 			return 0, canEx
 		} else {
-			result += top * int(math.Pow10(value))
+			result += top * int(math.Pow10(unitsByKanjiOverMap[value]))
 			numstr = strSlice[1]
 		}
 	}
