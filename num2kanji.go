@@ -5,31 +5,17 @@ import (
 	"strconv"
 )
 
-// constant 0~9 number
-const (
-	ZERO  = 0
-	ONE   = 1
-	TWO   = 2
-	THREE = 3
-	FOUR  = 4
-	FIVE  = 5
-	SIX   = 6
-	SEVEN = 7
-	EIGHT = 8
-	NINE  = 9
-)
-
 var number2kanji = map[int]string{
-	ZERO:  "零",
-	ONE:   "壱",
-	TWO:   "弐",
-	THREE: "参",
-	FOUR:  "四",
-	FIVE:  "五",
-	SIX:   "六",
-	SEVEN: "七",
-	EIGHT: "八",
-	NINE:  "九",
+	ZERO:  KANJI_ZERO,
+	ONE:   KANJI_ONE,
+	TWO:   KANJI_TWO,
+	THREE: KANJI_THREE,
+	FOUR:  KANJI_FOUR,
+	FIVE:  KANJI_FIVE,
+	SIX:   KANJI_SIX,
+	SEVEN: KANJI_SEVEN,
+	EIGHT: KANJI_EIGHT,
+	NINE:  KANJI_NINE,
 }
 
 // toKanji this func's param is num int, return string
@@ -37,36 +23,26 @@ func toKanji(num int) string {
 	return number2kanji[num]
 }
 
-// constant units
-const (
-	TEN                  = 1
-	HUNDRED              = 2
-	THOUSAND             = 3
-	TEN_THOUSAND         = 4
-	ONE_HUNDRED_THOUSAND = 8
-	ONE_TRILLION         = 12
-)
-
 const LIMIT_LOOP int = 5
 const MAX = 9999999999999999
 
-var unitsByKanji = map[int]string{
-	TEN:                  "拾",
-	HUNDRED:              "百",
-	THOUSAND:             "千",
-	TEN_THOUSAND:         "万",
-	ONE_HUNDRED_THOUSAND: "億",
-	ONE_TRILLION:         "兆",
+var unitsByIntMap = map[int]string{
+	TEN:                  KANJI_TEN,
+	HUNDRED:              KANJI_HUNDRED,
+	THOUSAND:             KANJI_THOUSAND,
+	TEN_THOUSAND:         KANJI_TEN_THOUSAND,
+	ONE_HUNDRED_THOUSAND: KANJI_ONE_HUNDRED_THOUSAND,
+	ONE_TRILLION:         KANJI_ONE_TRILLION,
 }
 
-var unitsByInt [LIMIT_LOOP + 1]int = [LIMIT_LOOP + 1]int{1, 2, 3, 4, 8, 12}
+var unitsByInt [LIMIT_LOOP + 1]int = [LIMIT_LOOP + 1]int{TEN, HUNDRED, THOUSAND, TEN_THOUSAND, ONE_HUNDRED_THOUSAND, ONE_TRILLION}
 
 // getUnit this func's param is unit int, return string
 func getUnitByKanji(unit int) string {
-	return unitsByKanji[unit]
+	return unitsByIntMap[unit]
 }
 
-func Kanji2number(param string) (result string, err error) {
+func num2kanji(param string) (result string, err error) {
 	num, err := strconv.Atoi(param)
 	if err != nil {
 		result = ""
