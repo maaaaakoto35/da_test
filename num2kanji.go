@@ -53,19 +53,20 @@ func num2kanji(param string) (result string, err error) {
 	} else if num < ZERO || num > MAX {
 		result = ""
 	} else {
-		result = recursion2kanji(num, "")
+		result = recursion2kanji(num)
 	}
 	return
 }
 
-func recursion2kanji(num int, result string) string {
+func recursion2kanji(num int) string {
+	var result = ""
 	for i := LIMIT_LOOP; i >= 0; i-- {
 		loopUnit := unitsByInt[i]
 		bias := math.Pow10(loopUnit)
 		if num >= int(bias) {
 			top := math.Floor(float64(num / int(bias)))
 			if int(top) >= 10 {
-				result += recursion2kanji(int(top), result)
+				result += recursion2kanji(int(top))
 			} else {
 				result += toKanji(int(top))
 			}
